@@ -68,6 +68,9 @@ export function Calculator() {
       // Display the fetched rate
       console.log('Exchange rate updated!')
       console.log(`1 KRW = ${krwToUzs.toFixed(4)} UZS`)
+      
+      // Show rate to user
+      alert(`Valyuta kursi yangilandi!\n1 KRW = ${krwToUzs.toFixed(2)} UZS`)
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error)
       // Keep the default rate on error
