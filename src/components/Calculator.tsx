@@ -243,7 +243,7 @@ export function Calculator() {
               <span>1 KRW = {exchangeRate.toFixed(2)} UZS</span>
             </div>
             <div className="flex justify-between font-bold text-xl">
-              <span>Chakana narx:</span>
+              <span>Yetib borishi:</span>
               <span className="text-primary">{formatNumber(retailPriceUZS)} so'm</span>
             </div>
           </div>
