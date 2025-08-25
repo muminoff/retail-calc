@@ -70,12 +70,15 @@ export function Calculator() {
   const generateDataMatrix = useCallback(() => {
     if (canvasRef.current) {
       try {
+        // Get the container width to make it responsive
+        const containerWidth = Math.min(window.innerWidth * 0.7, 300) // 70% of screen width, max 300px
+        const scale = Math.floor(containerWidth / 40) // Dynamic scale based on container
+        
         bwipjs.toCanvas(canvasRef.current, {
           bcid: 'datamatrix',
           text: retailPriceUZS.toString(),
-          scale: 6,
-          height: 15,
-          width: 15,
+          scale: scale,
+          padding: 2,
           includetext: false,
         })
       } catch (error) {
@@ -191,9 +194,13 @@ export function Calculator() {
 
       {/* DataMatrix Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-md" showCloseButton={false}>
-          <div className="flex items-center justify-center p-6">
-            <canvas ref={canvasRef} />
+        <DialogContent className="sm:max-w-sm w-[90vw] max-w-[350px]" showCloseButton={false}>
+          <div className="flex items-center justify-center p-4">
+            <canvas 
+              ref={canvasRef} 
+              className="max-w-full h-auto"
+              style={{ imageRendering: 'pixelated' }}
+            />
           </div>
         </DialogContent>
       </Dialog>
