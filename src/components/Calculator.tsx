@@ -17,7 +17,7 @@ export function Calculator() {
   const [originalPrice, setOriginalPrice] = useState<number>(10000)
   const [weight, setWeight] = useState<number>(100)
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN)
-  const [exchangeRate, setExchangeRate] = useState<number>(9.8) // Default KRW to UZS rate
+  const [exchangeRate, setExchangeRate] = useState<number>(9.5) // Default KRW to UZS rate (will be updated from API)
   const [isLoadingRate, setIsLoadingRate] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPriceDetailsModalOpen, setIsPriceDetailsModalOpen] = useState(false)
@@ -42,15 +42,31 @@ export function Calculator() {
   const fetchExchangeRate = useCallback(async () => {
     setIsLoadingRate(true)
     try {
-      // In production, you would fetch from a real API
-      // For now, we'll simulate an API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Using exchangerate-api.com free tier
+      // We need to calculate KRW to UZS through USD
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD')
       
-      // Simulated rate (in production, fetch from an API like exchangerate-api.com)
-      const newRate = 9.5 + Math.random() * 0.6 // Random between 9.5-10.1
-      setExchangeRate(newRate)
+      if (!response.ok) {
+        throw new Error('Failed to fetch exchange rates')
+      }
+      
+      const data = await response.json()
+      
+      // Get both KRW and UZS rates relative to USD
+      const usdToKrw = data.rates.KRW
+      const usdToUzs = data.rates.UZS
+      
+      if (!usdToKrw || !usdToUzs) {
+        throw new Error('Currency rates not available')
+      }
+      
+      // Calculate KRW to UZS rate (1 KRW = ? UZS)
+      const krwToUzs = usdToUzs / usdToKrw
+      
+      setExchangeRate(krwToUzs)
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error)
+      // Keep the default rate on error
     } finally {
       setIsLoadingRate(false)
     }
