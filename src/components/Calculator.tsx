@@ -31,8 +31,11 @@ export function Calculator() {
   // Calculate total cost in KRW
   const totalCostKRW = originalPrice + shippingCost
   
+  // Calculate margin amount in KRW
+  const marginAmountKRW = totalCostKRW * (margin / 100)
+  
   // Calculate final price with margin in KRW
-  const priceWithMarginKRW = totalCostKRW * (1 + margin / 100)
+  const priceWithMarginKRW = totalCostKRW + marginAmountKRW
   
   // Convert to UZS and round to nearest thousand
   const retailPriceUZS = Math.round((priceWithMarginKRW * exchangeRate) / 1000) * 1000
@@ -210,6 +213,7 @@ export function Calculator() {
       <Dialog open={isPriceDetailsModalOpen} onOpenChange={setIsPriceDetailsModalOpen}>
         <DialogContent className="sm:max-w-md" showCloseButton={false}>
           <div className="space-y-3 p-4">
+            {/* Cost breakdown */}
             <div className="flex justify-between">
               <span className="text-muted-foreground">Mahsulot narxi:</span>
               <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
@@ -218,17 +222,29 @@ export function Calculator() {
               <span className="text-muted-foreground">Yetkazib berish:</span>
               <span className="font-semibold">{formatNumber(shippingCost)} KRW</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Jami xarajat:</span>
-              <span className="font-semibold">{formatNumber(totalCostKRW)} KRW</span>
+            <div className="flex justify-between font-semibold pt-2 border-t">
+              <span>Jami xarajat:</span>
+              <span>{formatNumber(totalCostKRW)} KRW</span>
             </div>
-            <div className="flex justify-between font-semibold text-lg pt-3 border-t">
-              <span>{margin}% foyda bilan:</span>
+            
+            {/* Margin calculation */}
+            <div className="flex justify-between pt-3 border-t">
+              <span className="text-muted-foreground">Foyda ({margin}%):</span>
+              <span className="font-semibold">{formatNumber(marginAmountKRW)} KRW</span>
+            </div>
+            <div className="flex justify-between font-bold">
+              <span>Sotish narxi (KRW):</span>
               <span className="text-primary">{formatNumber(priceWithMarginKRW)} KRW</span>
             </div>
+            
+            {/* Exchange rate and final price */}
             <div className="flex justify-between text-sm pt-3 border-t">
-              <span className="text-muted-foreground">KRW→UZS kursi:</span>
-              <span>{exchangeRate.toFixed(2)}</span>
+              <span className="text-muted-foreground">Valyuta kursi:</span>
+              <span>1 KRW = {exchangeRate.toFixed(2)} UZS</span>
+            </div>
+            <div className="flex justify-between font-bold text-xl">
+              <span>Chakana narx:</span>
+              <span className="text-primary">{formatNumber(retailPriceUZS)} so'm</span>
             </div>
           </div>
         </DialogContent>
