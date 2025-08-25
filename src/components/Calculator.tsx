@@ -219,7 +219,7 @@ export function Calculator() {
               <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Yetkazib berish:</span>
+              <span className="text-muted-foreground">Pochta xarajat:</span>
               <span className="font-semibold">{formatNumber(shippingCost)} KRW</span>
             </div>
             <div className="flex justify-between font-semibold pt-2 border-t">
