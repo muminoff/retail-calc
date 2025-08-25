@@ -47,14 +47,14 @@ export function Calculator() {
       const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD')
       
       if (!response.ok) {
-        throw new Error('Failed to fetch exchange rates')
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
       
       const data = await response.json()
       
       // Get both KRW and UZS rates relative to USD
-      const usdToKrw = data.rates.KRW
-      const usdToUzs = data.rates.UZS
+      const usdToKrw = data.rates?.KRW
+      const usdToUzs = data.rates?.UZS
       
       if (!usdToKrw || !usdToUzs) {
         throw new Error('Currency rates not available')
@@ -64,6 +64,10 @@ export function Calculator() {
       const krwToUzs = usdToUzs / usdToKrw
       
       setExchangeRate(krwToUzs)
+      
+      // Display the fetched rate
+      console.log('Exchange rate updated!')
+      console.log(`1 KRW = ${krwToUzs.toFixed(4)} UZS`)
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error)
       // Keep the default rate on error
