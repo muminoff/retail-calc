@@ -7,8 +7,6 @@ import { Slider } from '@/components/ui/slider'
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog'
 import { RefreshCw, Printer } from 'lucide-react'
 import bwipjs from 'bwip-js'
