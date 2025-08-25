@@ -215,7 +215,7 @@ export function Calculator() {
           <div className="space-y-3 p-4">
             {/* Cost breakdown */}
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Mahsulot narxi:</span>
+              <span className="text-muted-foreground">Asl narxi:</span>
               <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
             </div>
             <div className="flex justify-between">
