@@ -78,7 +78,6 @@ export function Calculator() {
           bcid: 'datamatrix',
           text: retailPriceUZS.toString(),
           scale: scale,
-          padding: 2,
           includetext: false,
         })
       } catch (error) {
