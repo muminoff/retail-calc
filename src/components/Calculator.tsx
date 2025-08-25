@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import {
@@ -20,7 +19,6 @@ export function Calculator() {
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN)
   const [exchangeRate, setExchangeRate] = useState<number>(9.8) // Default KRW to UZS rate
   const [isLoadingRate, setIsLoadingRate] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPriceDetailsModalOpen, setIsPriceDetailsModalOpen] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -51,7 +49,6 @@ export function Calculator() {
       // Simulated rate (in production, fetch from an API like exchangerate-api.com)
       const newRate = 9.5 + Math.random() * 0.6 // Random between 9.5-10.1
       setExchangeRate(newRate)
-      setLastUpdated(new Date())
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error)
     } finally {
@@ -67,14 +64,6 @@ export function Calculator() {
   // Format number with thousand separators
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US').format(Math.round(num))
-  }
-
-  // Format time
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit'
-    })
   }
 
   // Generate DataMatrix code
