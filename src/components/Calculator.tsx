@@ -161,20 +161,6 @@ export function Calculator() {
               />
             </div>
           </div>
-
-          {/* Exchange Rate */}
-          <div className="space-y-3">
-            <Label className="text-lg font-medium">KRW→UZS</Label>
-            <Input
-              type="number"
-              value={exchangeRate.toFixed(2)}
-              readOnly
-              className="bg-muted h-12 text-lg font-medium"
-            />
-            <p className="text-sm text-muted-foreground">
-              Yangilangan: {formatTime(lastUpdated)}
-            </p>
-          </div>
         </CardContent>
       </Card>
 
@@ -239,6 +225,10 @@ export function Calculator() {
             <div className="flex justify-between font-semibold text-lg pt-3 border-t">
               <span>{margin}% foyda bilan:</span>
               <span className="text-primary">{formatNumber(priceWithMarginKRW)} KRW</span>
+            </div>
+            <div className="flex justify-between text-sm pt-3 border-t">
+              <span className="text-muted-foreground">KRW→UZS kursi:</span>
+              <span>{exchangeRate.toFixed(2)}</span>
             </div>
           </div>
         </DialogContent>
