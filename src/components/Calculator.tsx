@@ -199,7 +199,7 @@ export function Calculator() {
                 className="w-full text-center cursor-pointer"
               >
                 <p className="text-3xl font-bold text-primary">
-                  {formatNumber(retailPriceUZS)} so'm
+                  {formatNumber(retailPriceUZS)} UZS
                 </p>
               </button>
             </div>
@@ -256,7 +256,7 @@ export function Calculator() {
             </div>
             <div className="flex justify-between font-bold text-xl">
               <span>Yetib borishi:</span>
-              <span className="text-primary">{formatNumber(retailPriceUZS)} so'm</span>
+              <span className="text-primary">{formatNumber(retailPriceUZS)} UZS</span>
             </div>
             
             {/* Print Button */}
