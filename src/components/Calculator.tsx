@@ -7,9 +7,9 @@ import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog'
-import { QrCode, AlertTriangle, CheckCircle, TrendingUp, Info } from 'lucide-react'
+import { QrCode } from 'lucide-react'
 import bwipjs from 'bwip-js'
-import { analyzePricing, getPriceEndingBonus } from '@/lib/priceAnalysis'
+import { analyzePricing } from '@/lib/priceAnalysis'
 
 const DEFAULT_MARGIN = 20
 const DEFAULT_SHIPPING_RATE = 15000 // KRW per 1kg
@@ -46,8 +46,6 @@ export function Calculator() {
     originalPrice,
     retailPriceUZS
   )
-  
-  const priceEndingBonus = getPriceEndingBonus(retailPriceUZS)
 
   // Fetch exchange rate
   const fetchExchangeRate = useCallback(async () => {
@@ -204,76 +202,26 @@ export function Calculator() {
 
           {/* Results Section */}
           <div className="pt-6 border-t">
-            <div className="relative">
-              {/* Price Analysis Warnings */}
-              {priceAnalysis.warnings.length > 0 && (
-                <div className="mb-3 space-y-2">
-                  {priceAnalysis.warnings.map((warning, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30 px-3 py-2 rounded-md">
-                      <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-                      <span>{warning}</span>
-                    </div>
-                  ))}
-                </div>
+            {/* Main Price Box with Dynamic Background */}
+            <div className={`${priceAnalysis.bgGradient} rounded-lg p-6 transition-all duration-500 relative overflow-hidden ${
+              priceAnalysis.level === 'excellent' ? 'animate-pulse-soft' : ''
+            } ${
+              priceAnalysis.level === 'warning' || priceAnalysis.level === 'poor' ? 'animate-warning-pulse' : ''
+            }`}>
+              {/* Shimmer effect for excellent prices */}
+              {priceAnalysis.level === 'excellent' && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
               )}
               
-              {/* Main Price Box with Dynamic Background */}
-              <div className={`${priceAnalysis.bgGradient} rounded-lg p-6 transition-all duration-500 relative overflow-hidden ${
-                priceAnalysis.level === 'excellent' ? 'animate-pulse-soft' : ''
-              } ${
-                priceAnalysis.level === 'warning' || priceAnalysis.level === 'poor' ? 'animate-warning-pulse' : ''
-              }`}>
-                {/* Shimmer effect for excellent prices */}
-                {priceAnalysis.level === 'excellent' && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
-                )}
-                
-                {/* Score Badge */}
-                <div className="absolute top-2 right-2 flex items-center gap-1">
-                  <div className={`flex items-center gap-1 px-2 py-1 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm ${
-                    priceAnalysis.level === 'excellent' ? 'animate-glow' : ''
-                  }`}>
-                    {priceAnalysis.score >= 70 ? (
-                      <CheckCircle className={`h-4 w-4 ${priceAnalysis.colorClass}`} />
-                    ) : priceAnalysis.score >= 50 ? (
-                      <TrendingUp className={`h-4 w-4 ${priceAnalysis.colorClass}`} />
-                    ) : (
-                      <AlertTriangle className={`h-4 w-4 ${priceAnalysis.colorClass}`} />
-                    )}
-                    <span className={`text-xs font-bold ${priceAnalysis.colorClass}`}>
-                      {priceAnalysis.score}/100
-                    </span>
-                  </div>
-                </div>
-                
-                {/* Price Display */}
-                <button 
-                  onClick={() => setIsPriceDetailsModalOpen(true)}
-                  className="w-full text-center cursor-pointer relative z-10"
-                >
-                  <p className="text-3xl font-bold text-primary">
-                    {formatNumber(retailPriceUZS)} UZS
-                  </p>
-                  
-                  {/* Price Analysis Message */}
-                  <p className={`text-sm mt-2 font-medium ${priceAnalysis.colorClass}`}>
-                    {priceAnalysis.message}
-                  </p>
-                  
-                  {/* Price Ending Bonus */}
-                  {priceEndingBonus && (
-                    <p className="text-xs mt-1 text-muted-foreground">
-                      {priceEndingBonus}
-                    </p>
-                  )}
-                </button>
-              </div>
-              
-              {/* Score Explanation Tooltip */}
-              <div className="mt-3 flex items-center justify-center gap-1 text-xs text-muted-foreground">
-                <Info className="h-3 w-3" />
-                <span>Narx raqobatbardoshligi: Foyda va pochta xarajatlari asosida hisoblanadi</span>
-              </div>
+              {/* Price Display */}
+              <button 
+                onClick={() => setIsPriceDetailsModalOpen(true)}
+                className="w-full text-center cursor-pointer relative z-10"
+              >
+                <p className="text-3xl font-bold text-primary">
+                  {formatNumber(retailPriceUZS)} UZS
+                </p>
+              </button>
             </div>
           </div>
 
