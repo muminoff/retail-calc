@@ -7,7 +7,7 @@ import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog'
-import { Printer } from 'lucide-react'
+import { QrCode } from 'lucide-react'
 import bwipjs from 'bwip-js'
 
 const SHIPPING_RATE_PER_KG = 15000 // KRW per 1000g
@@ -249,7 +249,7 @@ export function Calculator() {
                   setTimeout(() => setIsModalOpen(true), 200)
                 }}
               >
-                <Printer className="h-5 w-5 text-white mr-2" />
+                <QrCode className="h-5 w-5 text-white mr-2" />
                 <span>Barkod</span>
               </Button>
             </div>
