@@ -118,7 +118,7 @@ export function Calculator() {
           {/* Original Price */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <Label htmlFor="original-price" className="text-lg font-medium">Asl narxi</Label>
+              <Label htmlFor="original-price" className="text-lg font-medium">Narxi</Label>
               <span className="text-lg font-semibold text-primary">{formatNumber(originalPrice)} KRW</span>
             </div>
             <div className="py-2">
@@ -227,7 +227,7 @@ export function Calculator() {
           <div className="space-y-3 p-4">
             {/* Cost breakdown */}
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Asl narxi:</span>
+              <span className="text-muted-foreground">Narxi:</span>
               <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
             </div>
             <div className="flex justify-between">
