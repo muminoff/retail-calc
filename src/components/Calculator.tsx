@@ -229,40 +229,40 @@ export function Calculator() {
 
       {/* Price Details Modal */}
       <Dialog open={isPriceDetailsModalOpen} onOpenChange={setIsPriceDetailsModalOpen}>
-        <DialogContent className="sm:max-w-sm w-[85vw]" showCloseButton={false}>
-          <div className="space-y-2 p-3 text-sm">
+        <DialogContent className="sm:max-w-md" showCloseButton={false}>
+          <div className="space-y-3 p-4">
             {/* Cost breakdown */}
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Asl:</span>
-              <span className="font-medium">{formatNumber(originalPrice)} ₩</span>
+              <span className="text-muted-foreground">Asl narxi:</span>
+              <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Pochta:</span>
-              <span className="font-medium">{formatNumber(shippingCost)} ₩</span>
+              <span className="text-muted-foreground">Pochta xarajat:</span>
+              <span className="font-semibold">{formatNumber(shippingCost)} KRW</span>
             </div>
-            <div className="flex justify-between font-semibold pt-1 border-t">
-              <span>Jami:</span>
-              <span>{formatNumber(totalCostKRW)} ₩</span>
+            <div className="flex justify-between font-semibold pt-2 border-t">
+              <span>Jami xarajat:</span>
+              <span>{formatNumber(totalCostKRW)} KRW</span>
             </div>
             
             {/* Margin calculation */}
-            <div className="flex justify-between pt-2 border-t">
-              <span className="text-muted-foreground">{margin}%:</span>
-              <span className="font-medium">{formatNumber(marginAmountKRW)} ₩</span>
+            <div className="flex justify-between pt-3 border-t">
+              <span className="text-muted-foreground">Foyda ({margin}%):</span>
+              <span className="font-semibold">{formatNumber(marginAmountKRW)} KRW</span>
             </div>
             <div className="flex justify-between font-bold">
-              <span>Sotish:</span>
-              <span className="text-primary">{formatNumber(priceWithMarginKRW)} ₩</span>
+              <span>Sotish narxi (KRW):</span>
+              <span className="text-primary">{formatNumber(priceWithMarginKRW)} KRW</span>
             </div>
             
             {/* Exchange rate and final price */}
-            <div className="flex justify-between text-xs pt-2 border-t text-muted-foreground">
-              <span>Kurs:</span>
-              <span>1₩ = {exchangeRate.toFixed(2)}₴</span>
+            <div className="flex justify-between text-sm pt-3 border-t">
+              <span className="text-muted-foreground">Valyuta kursi:</span>
+              <span>1 KRW = {exchangeRate.toFixed(2)} UZS</span>
             </div>
-            <div className="flex justify-between font-bold text-lg">
-              <span>Narx:</span>
-              <span className="text-primary">{formatNumber(retailPriceUZS)} ₴</span>
+            <div className="flex justify-between font-bold text-xl">
+              <span>Yetib borishi:</span>
+              <span className="text-primary">{formatNumber(retailPriceUZS)} so'm</span>
             </div>
           </div>
         </DialogContent>
