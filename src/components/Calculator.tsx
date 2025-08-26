@@ -156,7 +156,7 @@ export function Calculator() {
           {/* Shipping Rate per KG */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <Label htmlFor="shipping-rate" className="text-lg font-medium">Pochta (1kg uchun)</Label>
+              <Label htmlFor="shipping-rate" className="text-lg font-medium">Pochta</Label>
               <span className="text-lg font-semibold text-primary">{formatNumber(shippingRatePerKg)} KRW</span>
             </div>
             <div className="py-2">
