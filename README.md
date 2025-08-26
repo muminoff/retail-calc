@@ -27,42 +27,41 @@ npm run build
 npm run preview
 ```
 
-## Deployment to Cloudflare Pages
+## Deployment to Vercel
 
-### Method 1: Using Cloudflare Dashboard
+### Automatic Deployment (Recommended)
 
-1. Build the project locally:
-   ```bash
-   npm run build
-   ```
+1. Push your code to GitHub
 
-2. Go to [Cloudflare Pages](https://pages.cloudflare.com/)
-
-3. Create a new project and upload the `dist` folder
-
-### Method 2: Using Wrangler CLI
-
-1. Install Wrangler:
-   ```bash
-   npm install -g wrangler
-   ```
-
-2. Build and deploy:
-   ```bash
-   npm run build
-   npx wrangler pages deploy dist
-   ```
-
-### Method 3: Git Integration
-
-1. Push your code to GitHub/GitLab
-
-2. Connect your repository in Cloudflare Pages dashboard
-
-3. Set build configuration:
+2. Import project on [Vercel](https://vercel.com):
+   - Connect GitHub repository
+   - Framework: Vite
    - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Node version: 18 or later
+   - Output directory: `dist`
+
+3. Add environment variables:
+   - `BOT_TOKEN` for Telegram bot
+
+4. Every push to `main` auto-deploys!
+
+### Manual Deployment
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+```
+
+### Features on Vercel
+
+- ✅ Auto-deploy on Git push
+- ✅ Preview deployments for PRs
+- ✅ Telegram bot webhook support
+- ✅ Global CDN
+- ✅ Free SSL
+- ✅ Zero configuration needed
 
 ## Telegram Bot Setup
 
