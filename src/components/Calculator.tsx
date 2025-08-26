@@ -7,7 +7,7 @@ import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog'
-import { RefreshCw, Printer } from 'lucide-react'
+import { Printer } from 'lucide-react'
 import bwipjs from 'bwip-js'
 
 const SHIPPING_RATE_PER_KG = 15000 // KRW per 1000g
@@ -18,7 +18,6 @@ export function Calculator() {
   const [weight, setWeight] = useState<number>(100)
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN)
   const [exchangeRate, setExchangeRate] = useState<number>(9.5) // Default KRW to UZS rate (will be updated from API)
-  const [isLoadingRate, setIsLoadingRate] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPriceDetailsModalOpen, setIsPriceDetailsModalOpen] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -40,7 +39,6 @@ export function Calculator() {
 
   // Fetch exchange rate
   const fetchExchangeRate = useCallback(async () => {
-    setIsLoadingRate(true)
     try {
       // Using exchangerate-api.com free tier
       // We need to calculate KRW to UZS through USD
@@ -65,17 +63,12 @@ export function Calculator() {
       
       setExchangeRate(krwToUzs)
       
-      // Display the fetched rate
+      // Log the fetched rate for debugging
       console.log('Exchange rate updated!')
       console.log(`1 KRW = ${krwToUzs.toFixed(4)} UZS`)
-      
-      // Show rate to user
-      alert(`Valyuta kursi yangilandi!\n1 KRW = ${krwToUzs.toFixed(2)} UZS`)
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error)
       // Keep the default rate on error
-    } finally {
-      setIsLoadingRate(false)
     }
   }, [])
 
@@ -193,19 +186,11 @@ export function Calculator() {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-4 pt-6 border-t">
+          {/* Print Button */}
+          <div className="pt-6 border-t">
             <Button 
               variant="default"
-              className="flex-1 h-16 bg-black hover:bg-gray-800"
-              onClick={fetchExchangeRate}
-              disabled={isLoadingRate}
-            >
-              <RefreshCw className={`h-6 w-6 text-white ${isLoadingRate ? 'animate-spin' : ''}`} />
-            </Button>
-            <Button 
-              variant="default"
-              className="flex-1 h-16 bg-black hover:bg-gray-800"
+              className="w-full h-16 bg-black hover:bg-gray-800"
               onClick={() => setIsModalOpen(true)}
             >
               <Printer className="h-6 w-6 text-white" />
