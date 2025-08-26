@@ -10,20 +10,21 @@ import {
 import { QrCode } from 'lucide-react'
 import bwipjs from 'bwip-js'
 
-const SHIPPING_RATE_PER_KG = 15000 // KRW per 1000g
 const DEFAULT_MARGIN = 20
+const DEFAULT_SHIPPING_RATE = 15000 // KRW per 1kg
 
 export function Calculator() {
   const [originalPrice, setOriginalPrice] = useState<number>(10000)
   const [weight, setWeight] = useState<number>(100)
+  const [shippingRatePerKg, setShippingRatePerKg] = useState<number>(DEFAULT_SHIPPING_RATE)
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN)
   const [exchangeRate, setExchangeRate] = useState<number>(9.5) // Default KRW to UZS rate (will be updated from API)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPriceDetailsModalOpen, setIsPriceDetailsModalOpen] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
-  // Calculate shipping cost
-  const shippingCost = (weight / 1000) * SHIPPING_RATE_PER_KG
+  // Calculate shipping cost (weight in grams / 1000 to get kg * rate per kg)
+  const shippingCost = (weight / 1000) * shippingRatePerKg
   
   // Calculate total cost in KRW
   const totalCostKRW = originalPrice + shippingCost
@@ -152,6 +153,25 @@ export function Calculator() {
             </div>
           </div>
 
+          {/* Shipping Rate per KG */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <Label htmlFor="shipping-rate" className="text-lg font-medium">Pochta (1kg uchun)</Label>
+              <span className="text-lg font-semibold text-primary">{formatNumber(shippingRatePerKg)} KRW</span>
+            </div>
+            <div className="py-2">
+              <Slider
+                id="shipping-rate"
+                value={[shippingRatePerKg]}
+                onValueChange={(value) => setShippingRatePerKg(value[0])}
+                min={10000}
+                max={50000}
+                step={1000}
+                className="touch-none"
+              />
+            </div>
+          </div>
+
           {/* Margin */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -211,7 +231,7 @@ export function Calculator() {
               <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Pochta xarajat:</span>
+              <span className="text-muted-foreground">Pochta ({weight}g):</span>
               <span className="font-semibold">{formatNumber(shippingCost)} KRW</span>
             </div>
             <div className="flex justify-between font-semibold pt-2 border-t">
