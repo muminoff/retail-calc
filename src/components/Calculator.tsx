@@ -186,16 +186,6 @@ export function Calculator() {
             </div>
           </div>
 
-          {/* Print Button */}
-          <div className="pt-6 border-t">
-            <Button 
-              variant="default"
-              className="w-full h-16 bg-black hover:bg-gray-800"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Printer className="h-6 w-6 text-white" />
-            </Button>
-          </div>
         </CardContent>
       </Card>
 
@@ -248,6 +238,21 @@ export function Calculator() {
             <div className="flex justify-between font-bold text-xl">
               <span>Yetib borishi:</span>
               <span className="text-primary">{formatNumber(retailPriceUZS)} so'm</span>
+            </div>
+            
+            {/* Print Button */}
+            <div className="pt-4 border-t mt-3">
+              <Button 
+                variant="default"
+                className="w-full h-12 bg-black hover:bg-gray-800"
+                onClick={() => {
+                  setIsPriceDetailsModalOpen(false)
+                  setTimeout(() => setIsModalOpen(true), 200)
+                }}
+              >
+                <Printer className="h-5 w-5 text-white mr-2" />
+                <span>DataMatrix kod</span>
+              </Button>
             </div>
           </div>
         </DialogContent>
