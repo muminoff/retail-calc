@@ -118,10 +118,10 @@ export function Calculator() {
   }, [isModalOpen, generateDataMatrix])
 
   return (
-    <div className="space-y-4">
-      {/* Input Fields */}
-      <Card>
-        <CardContent className="pt-6 pb-6 space-y-6">
+    <>
+      {/* Main Calculator Container */}
+      <Card className="shadow-lg">
+        <CardContent className="p-6 space-y-6">
           {/* Original Price */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -178,41 +178,41 @@ export function Calculator() {
               />
             </div>
           </div>
+
+          {/* Results Section */}
+          <div className="pt-6 border-t">
+            <div className="bg-primary/10 rounded-lg p-6">
+              <button 
+                onClick={() => setIsPriceDetailsModalOpen(true)}
+                className="w-full text-center cursor-pointer"
+              >
+                <p className="text-3xl font-bold text-primary">
+                  {formatNumber(retailPriceUZS)} so'm
+                </p>
+              </button>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-6 border-t">
+            <Button 
+              variant="default"
+              className="flex-1 h-16 bg-black hover:bg-gray-800"
+              onClick={fetchExchangeRate}
+              disabled={isLoadingRate}
+            >
+              <RefreshCw className={`h-6 w-6 text-white ${isLoadingRate ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button 
+              variant="default"
+              className="flex-1 h-16 bg-black hover:bg-gray-800"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <Printer className="h-6 w-6 text-white" />
+            </Button>
+          </div>
         </CardContent>
       </Card>
-
-      {/* Results */}
-      <Card className="border-primary/30 bg-primary/10">
-        <CardContent className="pt-8 pb-8">
-          <button 
-            onClick={() => setIsPriceDetailsModalOpen(true)}
-            className="w-full text-center cursor-pointer"
-          >
-            <p className="text-3xl font-bold text-primary">
-              {formatNumber(retailPriceUZS)} so'm
-            </p>
-          </button>
-        </CardContent>
-      </Card>
-
-      {/* Action Buttons */}
-      <div className="flex gap-4">
-        <Button 
-          variant="default"
-          className="flex-1 h-20 bg-black hover:bg-gray-800"
-          onClick={fetchExchangeRate}
-          disabled={isLoadingRate}
-        >
-          <RefreshCw className={`h-8 w-8 text-white ${isLoadingRate ? 'animate-spin' : ''}`} />
-        </Button>
-        <Button 
-          variant="default"
-          className="flex-1 h-20 bg-black hover:bg-gray-800"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <Printer className="h-8 w-8 text-white" />
-        </Button>
-      </div>
 
       {/* DataMatrix Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -267,6 +267,6 @@ export function Calculator() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   )
 }
