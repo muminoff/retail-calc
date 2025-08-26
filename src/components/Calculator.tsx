@@ -86,9 +86,8 @@ export function Calculator() {
   const generateDataMatrix = useCallback(() => {
     if (canvasRef.current) {
       try {
-        // Get the container width to make it responsive
-        const containerWidth = Math.min(window.innerWidth * 0.7, 300) // 70% of screen width, max 300px
-        const scale = Math.floor(containerWidth / 40) // Dynamic scale based on container
+        // Fixed reasonable size for DataMatrix
+        const scale = 5 // Good size for mobile and desktop
         
         bwipjs.toCanvas(canvasRef.current, {
           bcid: 'datamatrix',
@@ -191,11 +190,11 @@ export function Calculator() {
 
       {/* DataMatrix Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-sm w-[90vw] max-w-[350px]" showCloseButton={false}>
-          <div className="flex items-center justify-center p-4">
+        <DialogContent className="w-auto max-w-[90vw]" showCloseButton={false}>
+          <div className="flex items-center justify-center p-3">
             <canvas 
               ref={canvasRef} 
-              className="max-w-full h-auto"
+              className="block"
               style={{ imageRendering: 'pixelated' }}
             />
           </div>
@@ -251,7 +250,7 @@ export function Calculator() {
                 }}
               >
                 <Printer className="h-5 w-5 text-white mr-2" />
-                <span>DataMatrix kod</span>
+                <span>Barkod</span>
               </Button>
             </div>
           </div>
