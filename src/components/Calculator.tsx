@@ -188,7 +188,7 @@ export function Calculator() {
             onClick={() => setIsPriceDetailsModalOpen(true)}
             className="w-full text-center cursor-pointer"
           >
-            <p className="text-5xl font-bold text-primary">
+            <p className="text-3xl font-bold text-primary">
               {formatNumber(retailPriceUZS)} so'm
             </p>
           </button>
