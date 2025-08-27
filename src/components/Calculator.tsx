@@ -20,6 +20,7 @@ export function Calculator() {
   const [weight, setWeight] = useState<number>(100)
   const [shippingType, setShippingType] = useState<'ODDIY' | 'KOLLAGEN'>('ODDIY')
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN)
+  const [volume, setVolume] = useState<number>(1) // Default volume is 1
   const [exchangeRate, setExchangeRate] = useState<number>(9.5) // Default KRW to UZS rate (will be updated from API)
   const [usdToKrwRate, setUsdToKrwRate] = useState<number>(1450) // Default USD to KRW rate
   const [isPriceDetailsModalOpen, setIsPriceDetailsModalOpen] = useState(false)
@@ -27,11 +28,14 @@ export function Calculator() {
   // Get shipping rate in USD per kg based on selected type
   const shippingRateUSDPerKg = SHIPPING_RATES_USD_PER_KG[shippingType]
   
-  // Calculate shipping cost: (weight in grams / 1000) * rate per kg in USD * USD to KRW rate
-  const shippingCost = (weight / 1000) * shippingRateUSDPerKg * usdToKrwRate
+  // Calculate total price for all volume (original price * volume)
+  const totalOriginalPrice = originalPrice * volume
+  
+  // Calculate shipping cost: (weight in grams / 1000) * rate per kg in USD * USD to KRW rate * volume
+  const shippingCost = (weight / 1000) * shippingRateUSDPerKg * usdToKrwRate * volume
   
   // Calculate total cost in KRW
-  const totalCostKRW = originalPrice + shippingCost
+  const totalCostKRW = totalOriginalPrice + shippingCost
   
   // Calculate margin amount in KRW
   const marginAmountKRW = totalCostKRW * (margin / 100)
@@ -41,6 +45,11 @@ export function Calculator() {
   
   // Convert to UZS and round to nearest thousand
   const retailPriceUZS = Math.round((priceWithMarginKRW * exchangeRate) / 1000) * 1000
+  
+  // Calculate percentages for visualization
+  const originalPricePercentage = (totalOriginalPrice / priceWithMarginKRW) * 100
+  const shippingPercentage = (shippingCost / priceWithMarginKRW) * 100
+  const marginPercentage = (marginAmountKRW / priceWithMarginKRW) * 100
   
 
   // Fetch exchange rates
@@ -196,6 +205,30 @@ export function Calculator() {
             </ToggleGroup>
           </div>
 
+          {/* Volume */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center mb-3">
+              <Label className="text-lg font-medium">Hajm</Label>
+              <span className="text-lg font-semibold text-primary">{volume}x</span>
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              {[1, 10, 20, 50, 100].map((value) => (
+                <Button
+                  key={value}
+                  variant={volume === value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setVolume(value)
+                    triggerHaptic()
+                  }}
+                  className="font-medium"
+                >
+                  {value}
+                </Button>
+              ))}
+            </div>
+          </div>
+
           {/* Margin */}
           <div className="space-y-3">
             <div className="flex justify-between items-center mb-3">
@@ -220,6 +253,52 @@ export function Calculator() {
             </div>
           </div>
 
+          {/* Earnings Visualization */}
+          <div className="space-y-2">
+            <div className="relative w-full h-10 bg-muted rounded-lg overflow-hidden">
+              <div className="absolute inset-0 flex">
+                {/* Original Price */}
+                <div 
+                  className="bg-blue-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                  style={{ width: `${originalPricePercentage}%` }}
+                  title={`Narxi: ${formatNumber(totalOriginalPrice)} KRW`}
+                >
+                  {originalPricePercentage > 15 && `${originalPricePercentage.toFixed(0)}%`}
+                </div>
+                {/* Shipping */}
+                <div 
+                  className="bg-amber-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                  style={{ width: `${shippingPercentage}%` }}
+                  title={`Pochta: ${formatNumber(shippingCost)} KRW`}
+                >
+                  {shippingPercentage > 10 && `${shippingPercentage.toFixed(0)}%`}
+                </div>
+                {/* Margin (Profit) */}
+                <div 
+                  className="bg-green-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                  style={{ width: `${marginPercentage}%` }}
+                  title={`Foyda: ${formatNumber(marginAmountKRW)} KRW`}
+                >
+                  {marginPercentage > 10 && `${marginPercentage.toFixed(0)}%`}
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                <span>Narxi</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-amber-500 rounded"></div>
+                <span>Pochta</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-green-500 rounded"></div>
+                <span>Foyda ({formatNumber(marginAmountKRW)} KRW)</span>
+              </div>
+            </div>
+          </div>
+
         </CardContent>
       </Card>
 
@@ -232,12 +311,15 @@ export function Calculator() {
               <span className="text-muted-foreground">Narxi:</span>
               <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
             </div>
+            {volume > 1 && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Hajm ({volume}x):</span>
+                <span className="font-semibold">{formatNumber(totalOriginalPrice)} KRW</span>
+              </div>
+            )}
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Pochta ({weight}g, {shippingType.toLowerCase()}):</span>
+              <span className="text-muted-foreground">Pochta ({shippingType.toLowerCase()}{volume > 1 ? `, ${((weight * volume) / 1000).toFixed(1)}kg` : ''}):</span>
               <span className="font-semibold">{formatNumber(shippingCost)} KRW</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">({(weight/1000).toFixed(2)}kg × {shippingRateUSDPerKg} USD/kg × {formatNumber(usdToKrwRate)} KRW/USD)</span>
             </div>
             <div className="flex justify-between font-semibold pt-2 border-t">
               <span>Jami xarajat:</span>
@@ -254,14 +336,15 @@ export function Calculator() {
               <span className="text-primary">{formatNumber(priceWithMarginKRW)} KRW</span>
             </div>
             
-            {/* Exchange rate and final price */}
-            <div className="flex justify-between text-sm pt-3 border-t">
-              <span className="text-muted-foreground">Valyuta kursi:</span>
-              <span>1 KRW = {exchangeRate.toFixed(2)} UZS</span>
-            </div>
-            <div className="flex justify-between font-bold text-xl">
+            {/* Final price */}
+            <div className="flex justify-between font-bold text-xl pt-3 border-t">
               <span>Yetib borishi:</span>
               <span className="text-primary">{formatNumber(retailPriceUZS)} UZS</span>
+            </div>
+            
+            {/* Exchange rates */}
+            <div className="text-center text-sm text-muted-foreground pt-3 border-t">
+              <div>1KRW={exchangeRate.toFixed(1)}UZS • 1USD={formatNumber(usdToKrwRate)}KRW</div>
             </div>
             
           </div>
