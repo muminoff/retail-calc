@@ -208,8 +208,8 @@ export function Calculator() {
           {/* Volume */}
           <div className="space-y-3">
             <div className="flex justify-between items-center mb-3">
-              <Label className="text-lg font-medium">Hajm</Label>
-              <span className="text-lg font-semibold text-primary">{volume}x</span>
+              <Label className="text-lg font-medium">Miqdor</Label>
+              <span className="text-lg font-semibold text-primary">{volume} dona</span>
             </div>
             <div className="grid grid-cols-5 gap-2">
               {[1, 10, 20, 50, 100].map((value) => (
@@ -233,7 +233,7 @@ export function Calculator() {
           <div className="space-y-3">
             <div className="flex justify-between items-center mb-3">
               <Label className="text-lg font-medium">Foyda</Label>
-              <span className="text-lg font-semibold text-primary">{margin}%</span>
+              <span className="text-lg font-semibold text-primary">{formatNumber(marginAmountKRW)} KRW</span>
             </div>
             <div className="grid grid-cols-5 gap-2">
               {[10, 20, 30, 40, 50].map((value) => (
@@ -255,7 +255,7 @@ export function Calculator() {
 
           {/* Earnings Visualization */}
           <div className="space-y-2">
-            <div className="relative w-full h-10 bg-muted rounded-lg overflow-hidden">
+            <div className="relative w-full h-6 bg-muted rounded-lg overflow-hidden">
               <div className="absolute inset-0 flex">
                 {/* Original Price */}
                 <div 
@@ -294,7 +294,7 @@ export function Calculator() {
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 bg-green-500 rounded"></div>
-                <span>Foyda ({formatNumber(marginAmountKRW)} KRW)</span>
+                <span>Foyda</span>
               </div>
             </div>
           </div>
@@ -313,7 +313,7 @@ export function Calculator() {
             </div>
             {volume > 1 && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Hajm ({volume}x):</span>
+                <span className="text-muted-foreground">Miqdor ({volume} dona):</span>
                 <span className="font-semibold">{formatNumber(totalOriginalPrice)} KRW</span>
               </div>
             )}
@@ -332,7 +332,7 @@ export function Calculator() {
               <span className="font-semibold">{formatNumber(marginAmountKRW)} KRW</span>
             </div>
             <div className="flex justify-between font-bold">
-              <span>Sotish narxi (KRW):</span>
+              <span>Sotish narxi:</span>
               <span className="text-primary">{formatNumber(priceWithMarginKRW)} KRW</span>
             </div>
             
@@ -341,6 +341,12 @@ export function Calculator() {
               <span>Yetib borishi:</span>
               <span className="text-primary">{formatNumber(retailPriceUZS)} UZS</span>
             </div>
+            {volume > 1 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Donasi:</span>
+                <span>{formatNumber(Math.round(retailPriceUZS / volume / 1000) * 1000)} UZS</span>
+              </div>
+            )}
             
             {/* Exchange rates */}
             <div className="text-center text-sm text-muted-foreground pt-3 border-t">
