@@ -260,98 +260,88 @@ export function Calculator() {
       {/* Price Details Modal */}
       <Dialog open={isPriceDetailsModalOpen} onOpenChange={setIsPriceDetailsModalOpen}>
         <DialogContent className="sm:max-w-md" showCloseButton={false}>
-          <div className="space-y-3 p-4">
-            {/* Cost breakdown */}
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Narxi:</span>
-              <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
-            </div>
-            {volume > 1 && (
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Miqdor ({volume} dona):</span>
-                <span className="font-semibold">{formatNumber(totalOriginalPrice)} KRW</span>
+          <div className="space-y-4 p-4">
+            {/* Section 1: Costs (Xarajatlar) */}
+            <div className="space-y-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Xarajatlar</h3>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Tovar narxi</span>
+                <span className="text-sm font-medium">{formatNumber(originalPrice)} KRW</span>
               </div>
-            )}
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Pochta ({shippingType.toLowerCase()}{volume > 1 ? `, ${((weight * volume) / 1000).toFixed(1)}kg` : ''}):</span>
-              <span className="font-semibold">{formatNumber(shippingCost)} KRW</span>
-            </div>
-            <div className="flex justify-between font-semibold pt-2 border-t">
-              <span>Jami xarajat:</span>
-              <span>{formatNumber(totalCostKRW)} KRW</span>
-            </div>
-            
-            {/* Margin calculation */}
-            <div className="flex justify-between pt-3 border-t">
-              <span className="text-muted-foreground">Foyda ({margin}%):</span>
-              <span className="font-semibold">{formatNumber(marginAmountKRW)} KRW</span>
-            </div>
-            <div className="flex justify-between font-bold">
-              <span>Sotish narxi:</span>
-              <span className="text-primary">{formatNumber(priceWithMarginKRW)} KRW</span>
-            </div>
-            
-            {/* Final price */}
-            <div className="flex justify-between font-bold pt-3 border-t">
-              <span>Yetib borishi:</span>
-              <span className="text-primary">{formatNumber(retailPriceUZS)} UZS</span>
-            </div>
-            {volume > 1 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Donasi:</span>
-                <span>{formatNumber(Math.round(retailPriceUZS / volume / 1000) * 1000)} UZS</span>
+              {volume > 1 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">× {volume} dona</span>
+                  <span className="text-sm font-medium">{formatNumber(totalOriginalPrice)} KRW</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Pochta ({shippingType.toLowerCase()})</span>
+                <span className="text-sm font-medium">{formatNumber(shippingCost)} KRW</span>
               </div>
-            )}
+              <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
+                <span className="text-sm font-medium">Jami xarajat</span>
+                <span className="text-sm font-bold">{formatNumber(totalCostKRW)} KRW</span>
+              </div>
+            </div>
             
-            {/* Earnings Visualization */}
-            <div className="space-y-2 pt-3 border-t">
-              <div className="relative w-full h-6 bg-muted rounded-lg overflow-hidden">
+            {/* Section 2: Profit (Foyda) */}
+            <div className="space-y-2 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+              <h3 className="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider mb-2">Sizning foydangiz</h3>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-green-700 dark:text-green-400">Foyda ({margin}%)</span>
+                <span className="text-lg font-bold text-green-700 dark:text-green-400">{formatNumber(marginAmountKRW)} KRW</span>
+              </div>
+            </div>
+            
+            {/* Section 3: Final Prices (Sotish narxlari) */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Sotish narxlari</h3>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Narx (KRW)</span>
+                <span className="text-base font-medium">{formatNumber(priceWithMarginKRW)} KRW</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-primary/10 rounded-lg">
+                <span className="text-base font-medium">Sotish narxi</span>
+                <span className="text-xl font-bold text-primary">{formatNumber(retailPriceUZS)} UZS</span>
+              </div>
+              {volume > 1 && (
+                <div className="flex justify-between items-center px-3">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Har bir dona</span>
+                  <span className="text-sm font-medium">{formatNumber(Math.round(retailPriceUZS / volume / 1000) * 1000)} UZS</span>
+                </div>
+              )}
+            </div>
+            
+            {/* Visual Breakdown - Simplified */}
+            <div className="space-y-2">
+              <div className="relative w-full h-5 bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
                 <div className="absolute inset-0 flex">
-                  {/* Original Price */}
                   <div 
-                    className="bg-blue-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                    className="bg-gray-400 transition-all duration-300"
                     style={{ width: `${originalPricePercentage}%` }}
-                    title={`Narxi: ${formatNumber(totalOriginalPrice)} KRW`}
-                  >
-                    {originalPricePercentage > 15 && `${originalPricePercentage.toFixed(0)}%`}
-                  </div>
-                  {/* Shipping */}
+                    title={`Tovar: ${originalPricePercentage.toFixed(0)}%`}
+                  />
                   <div 
-                    className="bg-amber-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                    className="bg-gray-500 transition-all duration-300"
                     style={{ width: `${shippingPercentage}%` }}
-                    title={`Pochta: ${formatNumber(shippingCost)} KRW`}
-                  >
-                    {shippingPercentage > 10 && `${shippingPercentage.toFixed(0)}%`}
-                  </div>
-                  {/* Margin (Profit) */}
+                    title={`Pochta: ${shippingPercentage.toFixed(0)}%`}
+                  />
                   <div 
-                    className="bg-green-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                    className="bg-green-600 transition-all duration-300"
                     style={{ width: `${marginPercentage}%` }}
-                    title={`Foyda: ${formatNumber(marginAmountKRW)} KRW`}
-                  >
-                    {marginPercentage > 10 && `${marginPercentage.toFixed(0)}%`}
-                  </div>
+                    title={`Foyda: ${marginPercentage.toFixed(0)}%`}
+                  />
                 </div>
               </div>
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                  <span>Narxi</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-amber-500 rounded"></div>
-                  <span>Pochta</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-green-500 rounded"></div>
-                  <span>Foyda</span>
-                </div>
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>Xarajat {(originalPricePercentage + shippingPercentage).toFixed(0)}%</span>
+                <span className="font-medium text-green-600">Foyda {marginPercentage.toFixed(0)}%</span>
               </div>
             </div>
             
-            {/* Exchange rates */}
-            <div className="text-center text-sm text-muted-foreground pt-3 border-t">
-              <div>1KRW={exchangeRate.toFixed(1)}UZS • 1USD={formatNumber(usdToKrwRate)}KRW</div>
+            {/* Exchange rates - Very subtle */}
+            <div className="text-center text-xs text-gray-400 dark:text-gray-600">
+              <span>Valyuta kursi: 1 KRW = {exchangeRate.toFixed(1)} UZS</span>
             </div>
             
           </div>
