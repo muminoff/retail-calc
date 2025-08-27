@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import {
@@ -92,6 +93,22 @@ export function Calculator() {
       {/* Main Calculator Container */}
       <Card className="shadow-lg">
         <CardContent className="p-6 space-y-6">
+          {/* Retail Price Display at Top */}
+          <div className="bg-zinc-900 dark:bg-zinc-100 p-6 relative overflow-hidden border-0">
+            {/* Price Display */}
+            <button 
+              onClick={() => setIsPriceDetailsModalOpen(true)}
+              className="w-full text-center cursor-pointer relative z-10"
+            >
+              <p className="text-2xl font-bold text-white dark:text-black">
+                {formatNumber(retailPriceUZS)} UZS
+              </p>
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="border-t"></div>
+
           {/* Original Price */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -160,39 +177,25 @@ export function Calculator() {
 
           {/* Margin */}
           <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="margin" className="text-lg font-medium">Foyda</Label>
+            <div className="flex justify-between items-center mb-3">
+              <Label className="text-lg font-medium">Foyda</Label>
               <span className="text-lg font-semibold text-primary">{margin}%</span>
             </div>
-            <div className="py-2">
-              <Slider
-                id="margin"
-                value={[margin]}
-                onValueChange={(value) => {
-                  setMargin(value[0])
-                  triggerHaptic()
-                }}
-                min={5}
-                max={50}
-                step={1}
-                className="touch-none"
-              />
-            </div>
-          </div>
-
-          {/* Results Section */}
-          <div className="pt-6 border-t">
-            {/* Main Price Box with Neutral Background */}
-            <div className="bg-zinc-900 dark:bg-zinc-100 p-6 relative overflow-hidden border-0">
-              {/* Price Display */}
-              <button 
-                onClick={() => setIsPriceDetailsModalOpen(true)}
-                className="w-full text-center cursor-pointer relative z-10"
-              >
-                <p className="text-2xl font-bold text-white dark:text-black">
-                  {formatNumber(retailPriceUZS)} UZS
-                </p>
-              </button>
+            <div className="grid grid-cols-5 gap-2">
+              {[10, 20, 30, 40, 50].map((value) => (
+                <Button
+                  key={value}
+                  variant={margin === value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setMargin(value)
+                    triggerHaptic()
+                  }}
+                  className="font-medium"
+                >
+                  {value}%
+                </Button>
+              ))}
             </div>
           </div>
 
