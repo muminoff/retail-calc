@@ -1,15 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog'
-import { QrCode } from 'lucide-react'
-import bwipjs from 'bwip-js'
-import { analyzePricing } from '@/lib/priceAnalysis'
 
 const DEFAULT_MARGIN = 20
 const DEFAULT_SHIPPING_RATE = 15000 // KRW per 1kg
@@ -20,9 +16,7 @@ export function Calculator() {
   const [shippingRatePerKg, setShippingRatePerKg] = useState<number>(DEFAULT_SHIPPING_RATE)
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN)
   const [exchangeRate, setExchangeRate] = useState<number>(9.5) // Default KRW to UZS rate (will be updated from API)
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPriceDetailsModalOpen, setIsPriceDetailsModalOpen] = useState(false)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   
   // Calculate shipping cost (weight in grams / 1000 to get kg * rate per kg)
   const shippingCost = (weight / 1000) * shippingRatePerKg
@@ -39,13 +33,6 @@ export function Calculator() {
   // Convert to UZS and round to nearest thousand
   const retailPriceUZS = Math.round((priceWithMarginKRW * exchangeRate) / 1000) * 1000
   
-  // Analyze pricing for visual feedback
-  const priceAnalysis = analyzePricing(
-    margin,
-    shippingCost,
-    originalPrice,
-    retailPriceUZS
-  )
 
   // Fetch exchange rate
   const fetchExchangeRate = useCallback(async () => {
@@ -92,32 +79,13 @@ export function Calculator() {
     return new Intl.NumberFormat('en-US').format(Math.round(num))
   }
 
-  // Generate DataMatrix code
-  const generateDataMatrix = useCallback(() => {
-    if (canvasRef.current) {
-      try {
-        // Fixed reasonable size for DataMatrix
-        const scale = 5 // Good size for mobile and desktop
-        
-        bwipjs.toCanvas(canvasRef.current, {
-          bcid: 'datamatrix',
-          text: retailPriceUZS.toString(),
-          scale: scale,
-          includetext: false,
-        })
-      } catch (error) {
-        console.error('Error generating DataMatrix:', error)
-      }
+  // Haptic feedback helper
+  const triggerHaptic = () => {
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
     }
-  }, [retailPriceUZS])
+  }
 
-  // Generate DataMatrix when modal opens
-  useEffect(() => {
-    if (isModalOpen) {
-      // Small delay to ensure canvas is rendered
-      setTimeout(generateDataMatrix, 100)
-    }
-  }, [isModalOpen, generateDataMatrix])
 
   return (
     <>
@@ -134,7 +102,10 @@ export function Calculator() {
               <Slider
                 id="original-price"
                 value={[originalPrice]}
-                onValueChange={(value) => setOriginalPrice(value[0])}
+                onValueChange={(value) => {
+                  setOriginalPrice(value[0])
+                  triggerHaptic()
+                }}
                 min={500}
                 max={50000}
                 step={500}
@@ -153,7 +124,10 @@ export function Calculator() {
               <Slider
                 id="weight"
                 value={[weight]}
-                onValueChange={(value) => setWeight(value[0])}
+                onValueChange={(value) => {
+                  setWeight(value[0])
+                  triggerHaptic()
+                }}
                 min={10}
                 max={1000}
                 step={10}
@@ -172,7 +146,10 @@ export function Calculator() {
               <Slider
                 id="shipping-rate"
                 value={[shippingRatePerKg]}
-                onValueChange={(value) => setShippingRatePerKg(value[0])}
+                onValueChange={(value) => {
+                  setShippingRatePerKg(value[0])
+                  triggerHaptic()
+                }}
                 min={10000}
                 max={50000}
                 step={1000}
@@ -191,7 +168,10 @@ export function Calculator() {
               <Slider
                 id="margin"
                 value={[margin]}
-                onValueChange={(value) => setMargin(value[0])}
+                onValueChange={(value) => {
+                  setMargin(value[0])
+                  triggerHaptic()
+                }}
                 min={5}
                 max={50}
                 step={1}
@@ -202,23 +182,14 @@ export function Calculator() {
 
           {/* Results Section */}
           <div className="pt-6 border-t">
-            {/* Main Price Box with Dynamic Background */}
-            <div className={`${priceAnalysis.bgGradient} rounded-lg p-6 transition-all duration-500 relative overflow-hidden ${
-              priceAnalysis.level === 'excellent' ? 'animate-pulse-soft' : ''
-            } ${
-              priceAnalysis.level === 'warning' || priceAnalysis.level === 'poor' ? 'animate-warning-pulse' : ''
-            }`}>
-              {/* Shimmer effect for excellent prices */}
-              {priceAnalysis.level === 'excellent' && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
-              )}
-              
+            {/* Main Price Box with Neutral Background */}
+            <div className="bg-zinc-900 dark:bg-zinc-100 p-6 relative overflow-hidden border-0">
               {/* Price Display */}
               <button 
                 onClick={() => setIsPriceDetailsModalOpen(true)}
                 className="w-full text-center cursor-pointer relative z-10"
               >
-                <p className="text-3xl font-bold text-primary">
+                <p className="text-2xl font-bold text-white dark:text-black">
                   {formatNumber(retailPriceUZS)} UZS
                 </p>
               </button>
@@ -227,19 +198,6 @@ export function Calculator() {
 
         </CardContent>
       </Card>
-
-      {/* DataMatrix Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="w-auto max-w-[90vw]" showCloseButton={false}>
-          <div className="flex items-center justify-center p-3">
-            <canvas 
-              ref={canvasRef} 
-              className="block"
-              style={{ imageRendering: 'pixelated' }}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Price Details Modal */}
       <Dialog open={isPriceDetailsModalOpen} onOpenChange={setIsPriceDetailsModalOpen}>
@@ -279,20 +237,6 @@ export function Calculator() {
               <span className="text-primary">{formatNumber(retailPriceUZS)} UZS</span>
             </div>
             
-            {/* Print Button */}
-            <div className="pt-4 border-t mt-3">
-              <Button 
-                variant="default"
-                className="w-full h-12 bg-black hover:bg-gray-800"
-                onClick={() => {
-                  setIsPriceDetailsModalOpen(false)
-                  setTimeout(() => setIsModalOpen(true), 200)
-                }}
-              >
-                <QrCode className="h-5 w-5 text-white mr-2" />
-                <span>Barkod</span>
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>

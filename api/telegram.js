@@ -19,8 +19,7 @@ export default async function handler(req, res) {
           `Savdo Kalkulyatori Mini App-ga xush kelibsiz!\n\n` +
           `Bu bot orqali siz:\n` +
           `• Mahsulot narxini hisoblashingiz\n` +
-          `• Valyuta kursini ko'rishingiz\n` +
-          `• DataMatrix kod yaratishingiz mumkin\n\n` +
+          `• Valyuta kursini ko'rishingiz mumkin\n\n` +
           `Boshlash uchun quyidagi tugmani bosing:`;
         
         replyMarkup = {
@@ -41,8 +40,7 @@ export default async function handler(req, res) {
           `• Asl narxni belgilash (KRW)\n` +
           `• Pochta xarajatini hisoblash\n` +
           `• Foyda foizini sozlash\n` +
-          `• Real valyuta kursi\n` +
-          `• DataMatrix kod yaratish`;
+          `• Real valyuta kursi`;
       } else if (text === '/about') {
         responseText = `📊 *Savdo Kalkulyatori*\n\n` +
           `Versiya: 1.0.0\n` +

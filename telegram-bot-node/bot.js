@@ -23,8 +23,7 @@ bot.start((ctx) => {
     `Savdo Kalkulyatori Mini App-ga xush kelibsiz!\n\n` +
     `Bu bot orqali siz:\n` +
     `• Mahsulot narxini hisoblashingiz\n` +
-    `• Valyuta kursini ko'rishingiz\n` +
-    `• DataMatrix kod yaratishingiz mumkin\n\n` +
+    `• Valyuta kursini ko'rishingiz mumkin\n\n` +
     `Boshlash uchun quyidagi tugmani bosing:`,
     Markup.inlineKeyboard([
       [Markup.button.webApp('🧮 Kalkulyatorni ochish', WEBAPP_URL)]
@@ -47,7 +46,6 @@ bot.help((ctx) => {
 • Og'irlik bo'yicha pochta xarajatini hisoblash
 • Foyda foizini sozlash
 • Real vaqtda valyuta kursini olish
-• DataMatrix kod yaratish
 
 *Muammo bo'lsa:* @your_username
   `);
@@ -65,7 +63,6 @@ Bu bot savdogarlar uchun narxlarni hisoblashda yordam beradi.
 
 • Real valyuta kurslari
 • Avtomatik narx hisoblash
-• DataMatrix kod generatsiyasi
 
 Web versiya: ${WEBAPP_URL}
   `);
