@@ -90,6 +90,7 @@ vercel --prod
 - ✅ Dark/Light theme support (follows Telegram theme)
 - ✅ User authentication via Telegram
 
+
 ## Project Structure
 
 ```

@@ -109,6 +109,7 @@ export function Calculator() {
   }
 
 
+
   return (
     <>
       {/* Main Calculator Container */}
@@ -253,7 +254,6 @@ export function Calculator() {
             </div>
           </div>
 
-
         </CardContent>
       </Card>
 
@@ -340,13 +340,14 @@ export function Calculator() {
             </div>
             
             {/* Exchange rates - Very subtle */}
-            <div className="text-center text-xs text-gray-400 dark:text-gray-600">
+            <div className="text-center text-xs text-gray-400 dark:text-gray-600 pt-2">
               <span>Valyuta kursi: 1 KRW = {exchangeRate.toFixed(1)} UZS</span>
             </div>
             
           </div>
         </DialogContent>
       </Dialog>
+
     </>
   )
 }
