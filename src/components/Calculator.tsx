@@ -253,51 +253,6 @@ export function Calculator() {
             </div>
           </div>
 
-          {/* Earnings Visualization */}
-          <div className="space-y-2">
-            <div className="relative w-full h-6 bg-muted rounded-lg overflow-hidden">
-              <div className="absolute inset-0 flex">
-                {/* Original Price */}
-                <div 
-                  className="bg-blue-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
-                  style={{ width: `${originalPricePercentage}%` }}
-                  title={`Narxi: ${formatNumber(totalOriginalPrice)} KRW`}
-                >
-                  {originalPricePercentage > 15 && `${originalPricePercentage.toFixed(0)}%`}
-                </div>
-                {/* Shipping */}
-                <div 
-                  className="bg-amber-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
-                  style={{ width: `${shippingPercentage}%` }}
-                  title={`Pochta: ${formatNumber(shippingCost)} KRW`}
-                >
-                  {shippingPercentage > 10 && `${shippingPercentage.toFixed(0)}%`}
-                </div>
-                {/* Margin (Profit) */}
-                <div 
-                  className="bg-green-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
-                  style={{ width: `${marginPercentage}%` }}
-                  title={`Foyda: ${formatNumber(marginAmountKRW)} KRW`}
-                >
-                  {marginPercentage > 10 && `${marginPercentage.toFixed(0)}%`}
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                <span>Narxi</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-amber-500 rounded"></div>
-                <span>Pochta</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-green-500 rounded"></div>
-                <span>Foyda</span>
-              </div>
-            </div>
-          </div>
 
         </CardContent>
       </Card>
@@ -347,6 +302,52 @@ export function Calculator() {
                 <span>{formatNumber(Math.round(retailPriceUZS / volume / 1000) * 1000)} UZS</span>
               </div>
             )}
+            
+            {/* Earnings Visualization */}
+            <div className="space-y-2 pt-3 border-t">
+              <div className="relative w-full h-6 bg-muted rounded-lg overflow-hidden">
+                <div className="absolute inset-0 flex">
+                  {/* Original Price */}
+                  <div 
+                    className="bg-blue-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                    style={{ width: `${originalPricePercentage}%` }}
+                    title={`Narxi: ${formatNumber(totalOriginalPrice)} KRW`}
+                  >
+                    {originalPricePercentage > 15 && `${originalPricePercentage.toFixed(0)}%`}
+                  </div>
+                  {/* Shipping */}
+                  <div 
+                    className="bg-amber-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                    style={{ width: `${shippingPercentage}%` }}
+                    title={`Pochta: ${formatNumber(shippingCost)} KRW`}
+                  >
+                    {shippingPercentage > 10 && `${shippingPercentage.toFixed(0)}%`}
+                  </div>
+                  {/* Margin (Profit) */}
+                  <div 
+                    className="bg-green-500 flex items-center justify-center text-xs font-medium text-white transition-all duration-300"
+                    style={{ width: `${marginPercentage}%` }}
+                    title={`Foyda: ${formatNumber(marginAmountKRW)} KRW`}
+                  >
+                    {marginPercentage > 10 && `${marginPercentage.toFixed(0)}%`}
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                  <span>Narxi</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-amber-500 rounded"></div>
+                  <span>Pochta</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-green-500 rounded"></div>
+                  <span>Foyda</span>
+                </div>
+              </div>
+            </div>
             
             {/* Exchange rates */}
             <div className="text-center text-sm text-muted-foreground pt-3 border-t">
