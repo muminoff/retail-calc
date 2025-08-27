@@ -292,7 +292,7 @@ export function Calculator() {
             </div>
             
             {/* Final price */}
-            <div className="flex justify-between font-bold text-xl pt-3 border-t">
+            <div className="flex justify-between font-bold pt-3 border-t">
               <span>Yetib borishi:</span>
               <span className="text-primary">{formatNumber(retailPriceUZS)} UZS</span>
             </div>
