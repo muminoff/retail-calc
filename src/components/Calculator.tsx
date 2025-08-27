@@ -3,24 +3,32 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog'
 
 const DEFAULT_MARGIN = 20
-const DEFAULT_SHIPPING_RATE = 15000 // KRW per 1kg
+const SHIPPING_RATES_USD_PER_KG = {
+  ODDIY: 10, // USD per kg
+  KOLLAGEN: 13 // USD per kg
+}
 
 export function Calculator() {
   const [originalPrice, setOriginalPrice] = useState<number>(10000)
   const [weight, setWeight] = useState<number>(100)
-  const [shippingRatePerKg, setShippingRatePerKg] = useState<number>(DEFAULT_SHIPPING_RATE)
+  const [shippingType, setShippingType] = useState<'ODDIY' | 'KOLLAGEN'>('ODDIY')
   const [margin, setMargin] = useState<number>(DEFAULT_MARGIN)
   const [exchangeRate, setExchangeRate] = useState<number>(9.5) // Default KRW to UZS rate (will be updated from API)
+  const [usdToKrwRate, setUsdToKrwRate] = useState<number>(1450) // Default USD to KRW rate
   const [isPriceDetailsModalOpen, setIsPriceDetailsModalOpen] = useState(false)
   
-  // Calculate shipping cost (weight in grams / 1000 to get kg * rate per kg)
-  const shippingCost = (weight / 1000) * shippingRatePerKg
+  // Get shipping rate in USD per kg based on selected type
+  const shippingRateUSDPerKg = SHIPPING_RATES_USD_PER_KG[shippingType]
+  
+  // Calculate shipping cost: (weight in grams / 1000) * rate per kg in USD * USD to KRW rate
+  const shippingCost = (weight / 1000) * shippingRateUSDPerKg * usdToKrwRate
   
   // Calculate total cost in KRW
   const totalCostKRW = originalPrice + shippingCost
@@ -35,7 +43,7 @@ export function Calculator() {
   const retailPriceUZS = Math.round((priceWithMarginKRW * exchangeRate) / 1000) * 1000
   
 
-  // Fetch exchange rate
+  // Fetch exchange rates
   const fetchExchangeRate = useCallback(async () => {
     try {
       // Using exchangerate-api.com free tier
@@ -56,17 +64,21 @@ export function Calculator() {
         throw new Error('Currency rates not available')
       }
       
+      // Store USD to KRW rate for shipping calculations
+      setUsdToKrwRate(usdToKrw)
+      
       // Calculate KRW to UZS rate (1 KRW = ? UZS)
       const krwToUzs = usdToUzs / usdToKrw
       
       setExchangeRate(krwToUzs)
       
-      // Log the fetched rate for debugging
-      console.log('Exchange rate updated!')
+      // Log the fetched rates for debugging
+      console.log('Exchange rates updated!')
+      console.log(`1 USD = ${usdToKrw.toFixed(2)} KRW`)
       console.log(`1 KRW = ${krwToUzs.toFixed(4)} UZS`)
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error)
-      // Keep the default rate on error
+      // Keep the default rates on error
     }
   }, [])
 
@@ -105,9 +117,6 @@ export function Calculator() {
               </p>
             </button>
           </div>
-
-          {/* Divider */}
-          <div className="border-t"></div>
 
           {/* Original Price */}
           <div className="space-y-3">
@@ -153,26 +162,38 @@ export function Calculator() {
             </div>
           </div>
 
-          {/* Shipping Rate per KG */}
+          {/* Shipping Type */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <Label htmlFor="shipping-rate" className="text-lg font-medium">Pochta</Label>
-              <span className="text-lg font-semibold text-primary">{formatNumber(shippingRatePerKg)} KRW</span>
+              <Label htmlFor="shipping-type" className="text-lg font-medium">Pochta</Label>
+              <span className="text-lg font-semibold text-primary">{shippingRateUSDPerKg} USD/kg</span>
             </div>
-            <div className="py-2">
-              <Slider
-                id="shipping-rate"
-                value={[shippingRatePerKg]}
-                onValueChange={(value) => {
-                  setShippingRatePerKg(value[0])
+            <ToggleGroup 
+              type="single" 
+              value={shippingType}
+              onValueChange={(value: string) => {
+                if (value) {
+                  setShippingType(value as 'ODDIY' | 'KOLLAGEN')
                   triggerHaptic()
-                }}
-                min={10000}
-                max={50000}
-                step={1000}
-                className="touch-none"
-              />
-            </div>
+                }
+              }}
+              className="grid grid-cols-2 gap-2"
+            >
+              <ToggleGroupItem 
+                value="ODDIY" 
+                aria-label="Oddiy pochta"
+                className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                <div className="font-medium">Oddiy</div>
+              </ToggleGroupItem>
+              <ToggleGroupItem 
+                value="KOLLAGEN" 
+                aria-label="Kollagen pochta"
+                className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                <div className="font-medium">Kollagen</div>
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
 
           {/* Margin */}
@@ -212,8 +233,11 @@ export function Calculator() {
               <span className="font-semibold">{formatNumber(originalPrice)} KRW</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Pochta ({weight}g):</span>
+              <span className="text-muted-foreground">Pochta ({weight}g, {shippingType.toLowerCase()}):</span>
               <span className="font-semibold">{formatNumber(shippingCost)} KRW</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">({(weight/1000).toFixed(2)}kg × {shippingRateUSDPerKg} USD/kg × {formatNumber(usdToKrwRate)} KRW/USD)</span>
             </div>
             <div className="flex justify-between font-semibold pt-2 border-t">
               <span>Jami xarajat:</span>
